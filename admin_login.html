@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Bathinda Darshan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #18181b;
+            --color-bg-light: #27272a;
+            --color-text: #e4e4e7;
+            --color-primary: #f59e0b;
+            --color-primary-dark: #D97706;
+            --color-text-on-primary: #18181b;
+        }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: var(--color-bg-light);
+            padding: 3rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-container h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-white);
+            margin-bottom: 0.5rem;
+        }
+        .login-container p {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--color-bg);
+            border: 2px solid #3f3f46;
+            border-radius: 0.375rem;
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-on-primary);
+            border: none;
+            border-radius: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+        .form-message {
+            margin-top: 1.5rem;
+            padding: 0.875rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 1rem;
+            display: none;
+        }
+        .form-message.error {
+            display: block;
+            background-color: #450a0a;
+            color: #fee2e2;
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <p>Enter the password to access the panel.</p>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" id="login-button" class="submit-btn">Login</button>
+            <div id="form-message" class="form-message"></div>
+        </form>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const passwordInput = document.getElementById('password');
+        const formMessage = document.getElementById('form-message');
+
+        // This is your simple password.
+        // ⚠️ WARNING: This is NOT secure. See my note below.
+        const ADMIN_PASSWORD = "bathinda2025";
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = passwordInput.value;
+
+            if (password === ADMIN_PASSWORD) {
+                // Correct password. Redirect to the admin panel.
+                window.location.href = 'admin_panel.html';
+            } else {
+                // Incorrect password.
+                formMessage.textContent = "Incorrect password. Please try again.";
+                formMessage.className = 'form-message error';
+                passwordInput.value = "";
+            }
+        });
+    </script>
+
+</body>
+</html>

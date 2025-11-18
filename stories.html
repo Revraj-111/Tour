@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Stories - Bathinda Darshan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+/* 1. Base Styles */
+:root {
+    --color-bg: #18181b;
+    --color-bg-light: #27272a;
+    --color-bg-dark: #000000;
+    --color-text: #e4e4e7;
+    --color-text-muted: #a1a1aa;
+    --color-primary: #f59e0b;
+    --color-primary-dark: #D97706;
+    --color-text-on-primary: #18181b;
+    --color-white: #ffffff;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-muted);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 2. Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+    animation: fadeIn 1s ease-out forwards;
+}
+section {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Reusable Components */
+.container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+.container-narrow {
+    max-width: 896px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.button-link {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+    transition: all 0.3s ease;
+}
+.button-link:hover {
+    color: var(--color-white);
+    border-bottom-color: var(--color-white);
+}
+
+/* 4. Navigation */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(24, 24, 27, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    padding: 1rem 0;
+    border-bottom: 1px solid #3f3f46;
+}
+.main-nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-white);
+}
+.nav-links {
+    display: none;
+}
+.nav-links a {
+    color: var(--color-text-muted);
+    font-weight: 700;
+    margin-left: 1.5rem;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.nav-links a:hover {
+    color: var(--color-primary);
+}
+.nav-links a.active {
+    color: var(--color-white);
+}
+
+/* --- DROPDOWN STYLES --- */
+.nav-item-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.dropdown-toggle {
+    cursor: pointer;
+}
+.dropdown-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.35rem;
+    transition: transform 0.3s ease;
+    stroke-width: 2.5;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%; 
+    transform: translateX(-50%); 
+    padding-top: 0.75rem; 
+    min-width: 180px;
+    z-index: 100;
+}
+.dropdown-menu-content {
+    background-color: var(--color-bg-light);
+    border: 1px solid #3f3f46;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -2px rgba(0,0,0,0.1);
+    overflow: hidden; 
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInDropdown 0.2s ease-out forwards;
+}
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    color: var(--color-text-muted);
+    font-weight: 700;
+    margin-left: 0; 
+    white-space: nowrap;
+}
+.dropdown-menu a:hover {
+    color: var(--color-primary);
+    background-color: var(--color-bg); 
+}
+.dropdown-menu a.active {
+    color: var(--color-white);
+}
+.nav-item-dropdown:hover .dropdown-menu {
+    display: block;
+}
+.nav-item-dropdown:hover .dropdown-toggle {
+    color: var(--color-primary);
+}
+.nav-item-dropdown:hover .dropdown-icon {
+    transform: rotate(180deg);
+}
+/* --- END DROPDOWN STYLES --- */
+
+
+/* Page Header */
+.page-header {
+    padding-top: 10rem;
+    padding-bottom: 4rem;
+    text-align: center;
+    background-color: var(--color-bg-light);
+    border-bottom: 3px solid var(--color-primary);
+}
+.page-header h1 {
+    font-size: 3rem;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+}
+.page-header .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* Page Content */
+.page-content {
+    padding: 4rem 0;
+}
+.section-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 4rem;
+}
+.section-intro h2 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+.section-intro p {
+    font-size: 1.125rem;
+    color: var(--color-text);
+}
+
+/* Story Grid */
+.story-grid {
+    display: grid;
+    /* This creates a responsive grid that tries to fit 300px cards */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+.story-card {
+    background-color: var(--color-bg-light);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    border-left: 4px solid var(--color-primary);
+}
+.story-card:hover {
+    transform: translateY(-5px);
+}
+.story-card-rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+.story-card-rating svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: var(--color-primary);
+}
+.story-card blockquote {
+    margin: 0;
+    padding: 0;
+}
+.story-card blockquote p {
+    font-size: 1.125rem;
+    color: var(--color-text);
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    /* Ensures text doesn't overflow */
+    word-wrap: break-word;
+}
+.story-card-author {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--color-white);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+.story-card-location {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+/* Form Section */
+.story-form-section {
+    padding-top: 5rem;
+    margin-top: 5rem;
+    border-top: 1px solid #3f3f46;
+}
+.story-form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--color-bg-light);
+    padding: 3rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.story-form-container h2 {
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Re-using form styles from booking.html */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: var(--color-bg);
+    border: 2px solid #3f3f46;
+    border-radius: 0.375rem;
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    background-size: 1em;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: none;
+    border-radius: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+.submit-btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+.submit-btn:disabled {
+    background-color: var(--color-text-muted);
+    color: var(--color-bg-light);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.form-message {
+    margin-top: 1.5rem;
+    padding: 0.875rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 1rem;
+    display: none; /* Hidden by default */
+}
+.form-message.success {
+    display: block;
+    background-color: #15321f;
+    color: #dcfce7;
+    border: 1px solid #22c55e;
+}
+.form-message.error {
+    display: block;
+    background-color: #450a0a;
+    color: #fee2e2;
+    border: 1px solid #ef4444;
+}
+/* End of reused form styles */
+
+/* Footer */
+.footer {
+    background-color: var(--color-bg-dark);
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+.footer-socials {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.footer-socials a {
+    color: var(--color-text-muted);
+}
+.footer-socials a:hover {
+    color: var(--color-white);
+}
+.footer-socials svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+.footer-hashtag {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.footer-links a:hover {
+    color: var(--color-white);
+}
+.footer-links span {
+    color: #52525b;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        align-items: center;
+    }
+    .page-header h1 {
+        font-size: 3.75rem;
+    }
+}
+</style>
+</head>
+<body>
+
+    <!-- === NAVIGATION UPDATED === -->
+    <nav class="main-nav">
+        <div class="container">
+            <a href="index.html" class="nav-logo">Bathinda Darshan</a>
+            
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                
+                <!-- Updated Dropdown: "Places" -->
+                <div class="nav-item-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Places
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dropdown-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-menu-content">
+                            <a href="qila.html">Qila Mubarak</a>
+                            <a href="sanctuaries.html">Dharmik Sthan</a>
+                            <a href="education.html">Educational Institutes</a>
+                            <a href="administrative.html">Administrative</a>
+                            <a href="parks.html">Parks & Gardens</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Dropdown -->
+
+                <a href="culture.html">Culture</a>
+                <a href="people.html">People</a>
+                <!-- NEW: Added link -->
+                <a href="stories.html" class="active">Stories</a>
+                <a href="contact.html">Contact</a>
+                <a href="booking.html">Book Guide</a>
+            </div>
+        </div>
+    </nav>
+    <!-- === END NAVIGATION === -->
+
+    <header class="page-header fade-in">
+        <div class="container-narrow">
+            <h1>Shehar Di Kahaaniyan</h1>
+            <p class="subtitle">City Stories | Sunno Lokan Di Zubaani</p>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="section-intro">
+                <p>
+                    A city's soul is found in the stories of its people. Here, visitors and locals share their timeless memories, heartfelt opinions, and love for Bathinda. Read what they have to say, and then share your own story with us!
+                </p>
+            </div>
+
+            <!-- Dynamic Story Grid -->
+            <div class="story-grid">
+                <!-- Story 1 -->
+                <div class="story-card">
+                    <div class="story-card-rating">
+                        <!-- 5 Star Rating -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                    </div>
+                    <blockquote>
+                        <p>"I visited Bathinda for a wedding and was stunned by the Qila Mubarak. It feels more ancient and 'real' than any fort I've seen in Rajasthan. An absolute hidden gem of India."</p>
+                    </blockquote>
+                    <h4 class="story-card-author">Rohan Gupta</h4>
+                    <span class="story-card-location">Visitor from Delhi</span>
+                </div>
+
+                <!-- Story 2 -->
+                <div class="story-card">
+                    <div class="story-card-rating">
+                        <!-- 5 Star Rating -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                    </div>
+                    <blockquote>
+                        <p>"My roots are here. Though I live in Canada, visiting Talwandi Sabo (Damdama Sahib) is a spiritual reset. The peace I feel there is indescribable. Bathinda is blessed."</p>
+                    </blockquote>
+                    <h4 class="story-card-author">Gurbani Kaur</h4>
+                    <span class="story-card-location">Visitor from Vancouver, CA</span>
+                </div>
+
+                <!-- Story 3 -->
+                <div class="story-card">
+                    <div class="story-card-rating">
+                        <!-- 4 Star Rating -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27l-5.18 2.72 1-5.77-4.2-4.08 5.79-.84L12 3.9l2.59 5.4 5.79.84-4.2 4.08 1 5.77z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="fill: var(--color-bg-light); stroke: var(--color-primary);"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.31h5.4c.566 0 .81.757.37 1.088l-4.387 3.188a.563.563 0 00-.18.62l1.624 5.023a.563.563 0 01-.84.622l-4.387-3.188a.563.563 0 00-.67 0l-4.387 3.188a.563.563 0 01-.84-.622l1.624-5.023a.563.563 0 00-.18-.62l-4.387-3.188a.563.563 0 01.37-1.088h5.4a.563.563 0 00.475-.31l2.125-5.111z" /></svg>
+                    </div>
+                    <blockquote>
+                        <p>"The food tour was insane! I came for my friend's posting at AIIMS and wasn't expecting much, but the chole bhature and lassi at Dhobi Bazaar were the best I've ever had. Period."</p>
+                    </blockquote>
+                    <h4 class="story-card-author">Aarav Reddy</h4>
+                    <span class="story-card-location">Visitor from Hyderabad</span>
+                </div>
+            </div>
+
+            <!-- Interactive Form Section -->
+            <section class="story-form-section" id="share-story-form">
+                <div class="story-form-container">
+                    <h2>Share Your Story</h2>
+                    <!-- Using the same 'submit' pattern as contact.html -->
+                    <form id="story-form">
+                        <div class="form-group">
+                            <label for="story-name">Your Name</label>
+                            <input type="text" id="story-name" name="story-name" required placeholder="Enter your name">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="story-location">Your City (e.g. "Visitor from Mumbai")</label>
+                                <input type="text" id="story-location" name="story-location" required placeholder="Visitor from...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="story-rating">Your Rating</label>
+                                <select id="story-rating" name="story-rating" required>
+                                    <option value="">Select a rating</option>
+                                    <option value="5">★★★★★ (Excellent)</option>
+                                    <option value="4">★★★★☆ (Great)</option>
+                                    <option value="3">★★★☆☆ (Good)</option>
+                                    <option value="2">★★☆☆☆ (Fair)</option>
+                                    <option value="1">★☆☆☆☆ (Poor)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="story-message">Your Story / Opinion</label>
+                            <textarea id="story-message" name="story-message" required placeholder="Write your message here..."></textarea>
+                        </div>
+
+                        <button type="submit" id="submit-button" class="submit-btn">Share My Story</button>
+
+                        <div id="form-message" class="form-message"></div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+   <footer class="footer">
+        <div class="container">
+            <div class="footer-socials">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/rajan_theking?igsh=OGxlM250MzFnczN2" target="_blank" aria-label="Instagram">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.148 3.229-1.664 4.771-4.919 4.919-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.07-1.646-.07-4.85s.012-3.584.07-4.85c.148-3.229 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-2.163C8.74 0 8.333.014 7.053.072 2.695.272.272 2.69.072 7.053.014 8.333 0 8.74 0 12s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.74 24 12 24s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.687.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.26 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>
+                </a>
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/share/16C3tFSveH/" target="_blank" aria-label="Facebook">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                </a>
+                <!-- YouTube -->
+                <a href="https://youtube.com/shorts/7VpFGA6retk?si=2SEB2lrP-bR7T2Lp" target="_blank" aria-label="YouTube">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-3.915 10.702-3.915 11.622 0 .92.018 11.355 3.915 11.622 3.6.245 11.626.246 15.23 0 3.897-.266 3.915-10.702 3.915-11.622 0-.92-.018-11.355-3.915-11.622zm-12.215 14.195v-9.375l8.385 4.68-8.385 4.695z"/></svg>
+                </a>
+            </div>
+            <p class="footer-hashtag">#BathindaDarshan</p>
+            <div class="footer-links">
+                <a href="culture.html">Saade Baare</a>
+                <span>|</span>
+                <a href="contact.html">Contact</a>
+                <span>|</span>
+                <a href="stories.html">Share Your Story</a>
+                <span>|</span>
+                <a href="admin_login.html">Admin</a>
+            </div>
+            <p style="font-size: 0.875rem;">&copy; 2025 | Ik Kalakaari Da Safar. Saare Haq Mehfooz.</p>
+        </div>
+    </footer>
+
+    <!-- === FIREBASE SCRIPT (Copied from contact.html logic) === -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- 1. Initialization Config ---
+        // Using the same config from your working contact.html
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9mgKjqaRMVsVEeUIuqJfDEyoHQnVYHRI",
+            authDomain: "tour-ef66f.firebaseapp.com",
+            projectId: "tour-ef66f",
+            storageBucket: "tour-ef66f.firebasestorage.app",
+            messagingSenderId: "872021006804",
+            appId: "1:872021006804:web:ea539d3f52ebcbcb3cde41"
+        };
+
+        const formMessage = document.getElementById('form-message');
+        const submitButton = document.getElementById('submit-button');
+        const storyForm = document.getElementById('story-form');
+        
+        let app, db;
+
+        // Helper function to show messages
+        function showFormMessage(msg, type) {
+            if (!formMessage) return;
+            formMessage.textContent = msg;
+            formMessage.className = 'form-message ' + type;
+        }
+        
+        // Asynchronous Initialization and Listener Attachment
+        async function initializeAndAttachListener() {
+            try {
+                // Initialize Core Services
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                console.log("Firebase Database initialized successfully (Authentication skipped).");
+
+                // --- 2. ATTACH LISTENER ---
+                if (storyForm) {
+                    storyForm.addEventListener('submit', async (e) => {
+                        e.preventDefault(); 
+
+                        // Validation
+                        const nameInput = document.getElementById('story-name');
+                        const locationInput = document.getElementById('story-location');
+                        const ratingInput = document.getElementById('story-rating');
+                        const messageInput = document.getElementById('story-message');
+                        
+                        if (!nameInput.value || !locationInput.value || !ratingInput.value || !messageInput.value) {
+                            showFormMessage("Please fill out all required fields.", "error");
+                            return;
+                        }
+
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Submitting...';
+                        showFormMessage("Sharing your story...", "success"); 
+
+                        // Get form data
+                        const name = nameInput.value;
+                        const location = locationInput.value;
+                        const rating = parseInt(ratingInput.value, 10);
+                        const message = messageInput.value;
+
+                        try {
+                            // --- 3. Save to Firestore ---
+                            const collRef = collection(db, 'cityStories'); // NEW Collection
+                            
+                            await addDoc(collRef, {
+                                name: name,
+                                location: location,
+                                rating: rating,
+                                message: message,
+                                submittedAt: serverTimestamp()
+                            });
+
+                            // --- 4. Show Success ---
+                            showFormMessage('Thank you! Your story has been shared successfully.', 'success');
+                            storyForm.reset();
+
+                        } catch (error) {
+                            // --- 5. Show Error ---
+                            console.error("Firestore Submission Failed:", error);
+                            showFormMessage('Error sharing story. Please try again later.', 'error');
+
+                        } finally {
+                            // --- 6. Re-enable button ---
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Share My Story';
+                        }
+                    });
+                }
+
+            } catch (e) {
+                console.error("CRITICAL: Firebase initialization failed: ", e);
+                showFormMessage("Service failed to start. Cannot send messages.", "error");
+                if(submitButton) submitButton.disabled = true;
+            }
+        }
+        
+        // Start the process
+        initializeAndAttachListener();
+
+    </script>
+    <script src='https://cdn.jotfor.ms/agent/embedjs/019a9532033272669b83ee6fd8be90b916d7/embed.js'>
+</script>
+    <!-- === END FIREBASE SCRIPT === -->
+
+</body>
+</html>

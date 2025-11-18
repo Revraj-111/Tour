@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Guide - Bathinda Darshan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+/* 1. Base Styles */
+:root {
+    --color-bg: #18181b;
+    --color-bg-light: #27272a;
+    --color-bg-dark: #000000;
+    --color-text: #e4e4e7;
+    --color-text-muted: #a1a1aa;
+    --color-primary: #f59e0b;
+    --color-primary-dark: #D97706;
+    --color-text-on-primary: #18181b;
+    --color-white: #ffffff;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-muted);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 2. Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+    animation: fadeIn 1s ease-out forwards;
+}
+section {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+/* Added animation for the dropdown */
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Reusable Components */
+.container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+.container-narrow {
+    max-width: 896px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.button-link {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+    transition: all 0.3s ease;
+}
+.button-link:hover {
+    color: var(--color-white);
+    border-bottom-color: var(--color-white);
+}
+
+
+/* 4. Navigation */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(24, 24, 27, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    padding: 1rem 0;
+    border-bottom: 1px solid #3f3f46;
+}
+.main-nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-white);
+}
+.nav-links {
+    display: none;
+}
+.nav-links a {
+    color: var(--color-text-muted);
+    font-weight: 700;
+    margin-left: 1.5rem;
+    transition: color 0.3s ease;
+    /* Added to align icons in dropdown toggle */
+    display: inline-flex;
+    align-items: center;
+}
+.nav-links a:hover {
+    color: var(--color-primary);
+}
+.nav-links a.active {
+    color: var(--color-white);
+}
+
+/* --- NEW DROPDOWN STYLES --- */
+.nav-item-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.dropdown-toggle {
+    cursor: pointer;
+}
+.dropdown-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.35rem;
+    transition: transform 0.3s ease;
+    stroke-width: 2.5;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%; 
+    transform: translateX(-50%); 
+    padding-top: 0.75rem; 
+    min-width: 180px;
+    z-index: 100;
+}
+.dropdown-menu-content {
+    background-color: var(--color-bg-light);
+    border: 1px solid #3f3f46;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -2px rgba(0,0,0,0.1);
+    overflow: hidden; 
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInDropdown 0.2s ease-out forwards;
+}
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    color: var(--color-text-muted);
+    font-weight: 700;
+    margin-left: 0; 
+    white-space: nowrap;
+}
+.dropdown-menu a:hover {
+    color: var(--color-primary);
+    background-color: var(--color-bg); 
+}
+.dropdown-menu a.active {
+    color: var(--color-white);
+}
+.nav-item-dropdown:hover .dropdown-menu {
+    display: block;
+}
+.nav-item-dropdown:hover .dropdown-toggle {
+    color: var(--color-primary);
+}
+.nav-item-dropdown:hover .dropdown-icon {
+    transform: rotate(180deg);
+}
+/* --- END DROPDOWN STYLES --- */
+
+
+/* Page Header */
+.page-header {
+    padding-top: 10rem;
+    padding-bottom: 4rem;
+    text-align: center;
+    background: linear-gradient(135deg, #27272a 0%, #18181b 100%);
+    border-bottom: 3px solid var(--color-primary);
+}
+.page-header h1 {
+    font-size: 3rem;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+}
+.page-header .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* Tour Packages Section */
+.tours-section {
+    padding: 4rem 0;
+}
+.section-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 4rem;
+}
+.section-intro h2 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+.section-intro p {
+    font-size: 1.125rem;
+    color: var(--color-text);
+}
+
+.tours-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.tour-card {
+    background-color: var(--color-bg-light);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+.tour-card:hover {
+    transform: translateY(-5px);
+}
+.tour-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+.tour-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.tour-card:hover .tour-image img {
+    transform: scale(1.1);
+}
+.tour-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.tour-content {
+    padding: 2rem;
+}
+.tour-content h3 {
+    font-size: 1.75rem;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+}
+.tour-punjabi {
+    font-size: 1rem;
+    color: var(--color-primary);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+.tour-content p {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.tour-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #3f3f46;
+}
+.tour-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+.tour-detail-item svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: var(--color-primary);
+}
+
+.tour-highlights {
+    margin-bottom: 1.5rem;
+}
+.tour-highlights h4 {
+    font-size: 1rem;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+.tour-highlights ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.tour-highlights li {
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+.tour-highlights li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.tour-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #3f3f46;
+}
+.tour-price {
+    font-family: 'Playfair Display', serif;
+}
+.tour-price .amount {
+    font-size: 2rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+.tour-price .per {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+.book-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: none;
+    border-radius: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.book-btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Our Guides Section */
+.guides-section {
+    padding: 4rem 0;
+    background-color: var(--color-bg-light);
+}
+.guides-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+.guide-card {
+    background-color: var(--color-bg);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+.guide-card:hover {
+    transform: translateY(-5px);
+}
+.guide-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 4px solid var(--color-primary);
+}
+.guide-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.guide-card h3 {
+    font-size: 1.5rem;
+    color: var(--color-white);
+    margin-bottom: 0.25rem;
+}
+.guide-specialty {
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+.guide-card p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+.guide-languages {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+}
+.language-tag {
+    background-color: var(--color-bg-light);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Booking Form Section */
+.booking-section {
+    padding: 4rem 0;
+}
+.booking-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--color-bg-light);
+    padding: 3rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.booking-container h2 {
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: var(--color-bg);
+    border: 2px solid #3f3f46;
+    border-radius: 0.375rem;
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    background-size: 1em;
+}
+
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: none;
+    border-radius: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+.submit-btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+.submit-btn:disabled {
+    background-color: var(--color-text-muted);
+    color: var(--color-bg-light);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.form-message {
+    margin-top: 1.5rem;
+    padding: 0.875rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 1rem;
+    display: none; /* Hidden by default */
+}
+.form-message.success {
+    display: block;
+    background-color: #15321f;
+    color: #dcfce7;
+    border: 1px solid #22c55e;
+}
+.form-message.error {
+    display: block;
+    background-color: #450a0a;
+    color: #fee2e2;
+    border: 1px solid #ef4444;
+}
+
+
+/* Info Box */
+.info-box {
+    background: linear-gradient(135deg, #3f3f46 0%, #27272a 100%);
+    border-left: 4px solid var(--color-primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0.5rem;
+}
+.info-box h4 {
+    font-size: 1.125rem;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+.info-box p {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+.info-box ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+.info-box li {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--color-bg-dark);
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+.footer-socials {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.footer-socials a {
+    color: var(--color-text-muted);
+}
+.footer-socials a:hover {
+    color: var(--color-white);
+}
+.footer-socials svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+.footer-hashtag {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.footer-links a:hover {
+    color: var(--color-white);
+}
+.footer-links span {
+    color: #52525b;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+    .tours-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .guides-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        align-items: center;
+    }
+    .page-header h1 {
+        font-size: 3.75rem;
+    }
+}
+@media (min-width: 1024px) {
+    .tours-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .guides-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+</style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="container">
+            <a href="index.html" class="nav-logo">Bathinda Darshan</a>
+            
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                
+                <div class="nav-item-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Places
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dropdown-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-menu-content">
+                            <a href="qila.html">Qila Mubarak</a>
+                            <a href="sanctuaries.html">Gurudhwara & Temples</a>
+                            <a href="education.html">Educational Institutes</a>
+                            <a href="administrative.html">Administrative</a>
+                            <a href="parks.html">Parks & Gardens</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="culture.html">Culture</a>
+                <a href="people.html">People</a>
+                <a href="stories.html">Stories</a>
+                <a href="contact.html">Contact</a>
+                <a href="booking.html" class="active">Book Guide</a>
+            </div>
+        </div>
+    </nav>
+    <header class="page-header fade-in">
+        <div class="container-narrow">
+            <h1>Book Your Guide</h1>
+            <p class="subtitle">Apna Tour Guide Chunno | Explore With Local Experts</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="tours-section">
+            <div class="container">
+                <div class="section-intro">
+                    <h2>Safar De Package | Tour Packages</h2>
+                    <p>
+                        Choose from our carefully curated tours designed to give you the most authentic Bathinda experience. Each tour is led by passionate local guides who know every story, every corner, and every secret of this historic city.
+                    </p>
+                </div>
+
+                <div class="tours-grid">
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="heritage.png" alt="Heritage Tour">
+                            <span class="tour-badge">Most Popular</span>
+                        </div>
+                        <div class="tour-content">
+                            <h3>Heritage Walk</h3>
+                            <p class="tour-punjabi">Virasat Di Sair</p>
+                            <p>Step back in time as you explore Qila Mubarak, ancient bazaars, and historical landmarks. Perfect for history enthusiasts.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>4-5 Hours</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>1-10 People</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>Qila Mubarak fortress tour</li>
+                                    <li>Razia Sultan's prison chambers</li>
+                                    <li>Old city bazaar walk</li>
+                                    <li>Traditional chai break</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">₹1,500</span>
+                                    <span class="per">/person</span>
+                                </div>
+                                <button class="book-btn">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="spirit.png" alt="Spiritual Tour">
+                        </div>
+                        <div class="tour-content">
+                            <h3>Spiritual Journey</h3>
+                            <p class="tour-punjabi">Dharmik Yatra</p>
+                            <p>Experience the divine at Takht Damdama Sahib, Lakhi Jungle, and sacred temples. A soul-enriching experience.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>Full Day</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>1-15 People</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>Takht Sri Damdama Sahib visit</li>
+                                    <li>Lakhi Jungle meditation spot</li>
+                                    <li>Maiser Khana Mandir darshan</li>
+                                    <li>Langar meal experience</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">₹2,200</span>
+                                    <span class="per">/person</span>
+                                </div>
+                                <button class="book-btn">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="food.png" alt="Food Tour">
+                            <span class="tour-badge">Foodie Favorite</span>
+                        </div>
+                        <div class="tour-content">
+                            <h3>Punjab Food Trail</h3>
+                            <p class="tour-punjabi">Khane Da Safar</p>
+                            <p>Taste the authentic flavors of Punjab. From street food to traditional dhabas, savor every bite of Bathinda's culinary heritage.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>3-4 Hours</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>1-8 People</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>Famous dhaba breakfast</li>
+                                    <li>Street food at Dhobi Bazaar</li>
+                                    <li>Traditional lassi tasting</li>
+                                    <li>Sarson da Saag lunch</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">₹1,800</span>
+                                    <span class="per">/person</span>
+                                </div>
+                                <button class="book-btn">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="zoo.png" alt="Photography Tour">
+                        </div>
+                        <div class="tour-content">
+                            <h3>Photography Expedition</h3>
+                            <p class="tour-punjabi">Tasveeran Da Safar</p>
+                            <p>Capture Bathinda's essence through your lens. Golden hour at the fort, bustling bazaars, and hidden gems.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>4 Hours</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>1-5 People</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>Golden hour at Qila Mubarak</li>
+                                    <li>Portrait session in bazaars</li>
+                                    <li>Lakeside photography</li>
+                                    <li>Expert tips from a local photographer</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">₹2,500</span>
+                                    <span class="per">/person</span>
+                                </div>
+                                <button class="book-btn">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="custom.png" alt="Custom Tour">
+                        </div>
+                        <div class="tour-content">
+                            <h3>Custom Tour</h3>
+                            <p class="tour-punjabi">Apni Marzi Da Safar</p>
+                            <p>Have something specific in mind? We'll create a personalized tour just for you, based on your interests and schedule.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>Flexible</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>Any Group Size</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>You decide!</li>
+                                    <li>Rural village visits</li>
+                                    <li>In-depth historical research</li>
+                                    <li>Shopping assistance</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">Custom</span>
+                                    <span class="per">/tour</span>
+                                </div>
+                                <button class="book-btn">Inquire Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-card">
+                        <div class="tour-image">
+                            <img src="phulk_art.png" alt="Crafts Tour">
+                        </div>
+                        <div class="tour-content">
+                            <h3>Bazaar & Crafts</h3>
+                            <p class="tour-punjabi">Kala Te Bazaar</p>
+                            <p>A shopper's dream. Discover hidden artisan workshops, see Phulkari being made, and find the perfect Punjabi jutti.</p>
+                            
+                            <div class="tour-details">
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>
+                                    </svg>
+                                    <span>3-4 Hours</span>
+                                </div>
+                                <div class="tour-detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <span>1-6 People</span>
+                                </div>
+                            </div>
+
+                            <div class="tour-highlights">
+                                <h4>Highlights Include:</h4>
+                                <ul>
+                                    <li>Dhobi Bazaar shopping</li>
+                                    <li>Meena Bazaar textile hunt</li>
+                                    <li>Jutti artisan workshop visit</li>
+                                    <li>Phulkari craft demonstration</li>
+                                </ul>
+                            </div>
+
+                            <div class="tour-footer">
+                                <div class="tour-price">
+                                    <span class="amount">₹1,200</span>
+                                    <span class="per">/person</span>
+                                </div>
+                                <button class="book-btn">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="guides-section">
+            <div class="container">
+                <div class="section-intro">
+                    <h2>Saade Guide | Meet Our Experts</h2>
+                    <p>
+                        Our guides are not just guides; they are storytellers, historians, and proud locals who are passionate about sharing the true spirit of Bathinda with you.
+                    </p>
+                </div>
+
+                <div class="guides-grid">
+                    <div class="guide-card">
+                        <div class="guide-avatar">
+                            <img src="harp.png" alt="Guide 1 Avatar">
+                        </div>
+                        <h3>Harpreet Singh</h3>
+                        <p class="guide-specialty">History & Heritage</p>
+                        <p>"I'll show you the Bathinda that isn't in the books. The stories hidden in the Qila's walls are my favorite to tell."</p>
+                        <div class="guide-languages">
+                            <span class="language-tag">Punjabi</span>
+                            <span class="language-tag">Hindi</span>
+                            <span class="language-tag">English</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="guide-avatar">
+                            <img src="jasleen.png" alt="Guide 2 Avatar">
+                        </div>
+                        <h3>Jasleen Kaur</h3>
+                        <p class="guide-specialty">Culture & Food</p>
+                        <p>"Want to know the best lassi spot? Or where to find the softest juttis? Follow me! I'll help you taste the real Bathinda."</p>
+                        <div class="guide-languages">
+                            <span class="language-tag">Punjabi</span>
+                            <span class="language-tag">English</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="guide-avatar">
+                            <img src="maninder.png" alt="Guide 3 Avatar">
+                        </div>
+                        <h3>Maninder Brar</h3>
+                        <p class="guide-specialty">Spiritual Tours</p>
+                        <p>"Peace and history live together here. I can guide you through the spiritual journey from Damdama Sahib to Lakhi Jungle."</p>
+                        <div class="guide-languages">
+                            <span class="language-tag">Punjabi</span>
+                            <span class="language-tag">Hindi</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="guide-avatar">
+                            <img src="vikram.png" alt="Guide 4 Avatar">
+                        </div>
+                        <h3>Vikramjit Gill</h3>
+                        <p class="guide-specialty">Photography & Offbeat</p>
+                        <p>"Let's find the perfect shot. I know the best angles, the best light, and the hidden places for that one-in-a-million photo."</p>
+                        <div class="guide-languages">
+                            <span class="language-tag">English</span>
+                            <span class="language-tag">Punjabi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-section" id="booking-form-section">
+            <div class="container">
+                <div class="booking-container">
+                    <h2>Request a Booking</h2>
+                    <form id="booking-form">
+                        <div class="form-group">
+                            <label for="name">Your Name | Apna Naam</label>
+                            <input type="text" id="name" name="name" required placeholder="Enter your name">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address | Email Pata</label>
+                                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number | Phone Nambar</label>
+                                <input type="tel" id="phone" name="phone" required placeholder="+91 XXXXX XXXXX">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tour-date">Preferred Date | Tareekh</label>
+                                <input type="date" id="tour-date" name="tour-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="guests">Number of Guests | Kinne Lok</label>
+                                <input type="number" id="guests" name="guests" min="1" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guide-preference">Tour Package or Guide</label>
+                            <select id="guide-preference" name="guide-preference" required>
+                                <option value="">Select a Tour or Guide</option>
+                                <option value="heritage">Heritage Walk</option>
+                                <option value="spiritual">Spiritual Journey</option>
+                                <option value="food">Punjab Food Trail</option>
+                                <option value="photography">Photography Expedition</option>
+                                <option value="crafts">Bazaar & Crafts Tour</option>
+                                <option value="custom">Custom Tour Inquiry</option>
+                                <option value="guide-harpreet">Guide: Harpreet Singh</option>
+                                <option value="guide-jasleen">Guide: Jasleen Kaur</option>
+                                <option value="guide-maninder">Guide: Maninder Brar</option>
+                                <option value="guide-vikramjit">Guide: Vikramjit Gill</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" id="submit-button" class="submit-btn">Send Booking Request</button>
+
+                        <div id="form-message" class="form-message"></div>
+
+                    </form>
+
+                    <div class="info-box">
+                        <h4>Please Note:</h4>
+                        <p>This is a booking request, not a confirmation. Our team will contact you via email or phone within 24 hours to confirm your booking and arrange payment.</p>
+                        <ul>
+                            <li>Tours are subject to guide availability.</li>
+                            <li>Prices are exclusive of entry tickets and food unless specified.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #3f3f46;">
+                    <a href="contact.html" class="button-link">← Previous: Contact</a>
+                    <span style="margin: 0 1rem; color: var(--color-text-muted);">|</span>
+                    <a href="index.html" class="button-link">Back to Home →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-socials">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/rajan_theking?igsh=OGxlM250MzFnczN2" target="_blank" aria-label="Instagram">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.148 3.229-1.664 4.771-4.919 4.919-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.07-1.646-.07-4.85s.012-3.584.07-4.85c.148-3.229 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-2.163C8.74 0 8.333.014 7.053.072 2.695.272.272 2.69.072 7.053.014 8.333 0 8.74 0 12s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.74 24 12 24s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.687.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.26 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>
+                </a>
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/share/16C3tFSveH/" target="_blank" aria-label="Facebook">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                </a>
+                <!-- YouTube -->
+                <a href="https://youtube.com/shorts/7VpFGA6retk?si=2SEB2lrP-bR7T2Lp" target="_blank" aria-label="YouTube">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-3.915 10.702-3.915 11.622 0 .92.018 11.355 3.915 11.622 3.6.245 11.626.246 15.23 0 3.897-.266 3.915-10.702 3.915-11.622 0-.92-.018-11.355-3.915-11.622zm-12.215 14.195v-9.375l8.385 4.68-8.385 4.695z"/></svg>
+                </a>
+            </div>
+            <p class="footer-hashtag">#BathindaDarshan</p>
+            <div class="footer-links">
+                <a href="culture.html">Saade Baare</a>
+                <span>|</span>
+                <a href="contact.html">Contact</a>
+                <span>|</span>
+                <a href="stories.html">Share Your Story</a>
+                <span>|</span>
+                <a href="admin_login.html">Admin</a>
+            </div>
+            <p style="font-size: 0.875rem;">&copy; 2025 | Ik Kalakaari Da Safar. Saare Haq Mehfooz.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // We only need the Firebase App and Firestore SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- 1. Initialization Config ---
+        // Using the same config from your working contact.html
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9mgKjqaRMVsVEeUIuqJfDEyoHQnVYHRI",
+            authDomain: "tour-ef66f.firebaseapp.com",
+            projectId: "tour-ef66f",
+            storageBucket: "tour-ef66f.firebasestorage.app",
+            messagingSenderId: "872021006804",
+            appId: "1:872021006804:web:ea539d3f52ebcbcb3cde41"
+        };
+
+        const formMessage = document.getElementById('form-message');
+        const submitButton = document.getElementById('submit-button');
+        const bookingForm = document.getElementById('booking-form'); // Changed ID
+        
+        let app, db;
+
+        // Helper function to show messages
+        function showFormMessage(msg, type) {
+            if (!formMessage) return;
+            formMessage.textContent = msg;
+            formMessage.className = 'form-message ' + type;
+        }
+        
+        // Asynchronous Initialization and Listener Attachment
+        async function initializeAndAttachListener() {
+            try {
+                // Initialize Core Services
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                console.log("Firebase Database initialized successfully (Authentication skipped).");
+
+                // --- 2. ATTACH LISTENER ---
+                if (bookingForm) { // Changed to bookingForm
+                    bookingForm.addEventListener('submit', async (e) => { // Changed to bookingForm
+                        e.preventDefault(); 
+
+                        // Validation
+                        const nameInput = document.getElementById('name');
+                        const emailInput = document.getElementById('email');
+                        const phoneInput = document.getElementById('phone');
+                        const dateInput = document.getElementById('tour-date');
+                        const guestsInput = document.getElementById('guests');
+                        const guideInput = document.getElementById('guide-preference');
+                        
+                        if (!nameInput.value || !emailInput.value || !phoneInput.value || !dateInput.value || !guestsInput.value || !guideInput.value) {
+                            showFormMessage("Please fill out all required fields.", "error");
+                            return;
+                        }
+
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Sending Request...'; // Changed text
+                        showFormMessage("Sending your booking request...", "success"); // Changed text
+
+                        // Get form data
+                        const name = nameInput.value;
+                        const email = emailInput.value;
+                        const phone = phoneInput.value;
+                        const tourDate = dateInput.value;
+                        const guests = guestsInput.value;
+                        const guidePreference = guideInput.value;
+
+                        try {
+                            // --- 3. Save to Firestore ---
+                            const collRef = collection(db, 'guideBookings'); // Changed collection
+                            
+                            await addDoc(collRef, { // Changed data payload
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                tourDate: tourDate,
+                                guests: parseInt(guests, 10),
+                                tourOrGuide: guidePreference,
+                                submittedAt: serverTimestamp()
+                            });
+
+                            // --- 4. Show Success ---
+                            showFormMessage('Booking request sent! We will contact you shortly to confirm.', 'success'); // Changed text
+                            bookingForm.reset(); // Changed to bookingForm
+
+                        } catch (error) {
+                            // --- 5. Show Error ---
+                            console.error("Firestore Submission Failed:", error);
+                            showFormMessage('Error sending request. Please try again later. (Check console for error code)', 'error'); // Changed text
+
+                        } finally {
+                            // --- 6. Re-enable button ---
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Send Booking Request'; // Changed text
+                        }
+                    });
+                }
+
+            } catch (e) {
+                console.error("CRITICAL: Firebase initialization failed: ", e);
+                showFormMessage("Service failed to start. Cannot send messages.", "error");
+                if(submitButton) submitButton.disabled = true;
+            }
+        }
+        
+        // Start the process
+        initializeAndAttachListener();
+
+        // Add scroll-to-form functionality for "Book Now" buttons
+        document.querySelectorAll('.book-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tourContent = e.target.closest('.tour-content');
+                if (!tourContent) return;
+                
+                const tourTitle = tourContent.querySelector('h3').textContent;
+                const guidePreferenceSelect = document.getElementById('guide-preference');
+                
+                if (tourTitle === 'Custom Tour') {
+                    guidePreferenceSelect.value = 'custom';
+                } else if (tourTitle === 'Heritage Walk') {
+                     guidePreferenceSelect.value = 'heritage';
+                } else if (tourTitle === 'Spiritual Journey') {
+                     guidePreferenceSelect.value = 'spiritual';
+                } else if (tourTitle === 'Punjab Food Trail') {
+                     guidePreferenceSelect.value = 'food';
+                } else if (tourTitle === 'Photography Expedition') {
+                     guidePreferenceSelect.value = 'photography';
+                } else if (tourTitle === 'Bazaar & Crafts') {
+                     guidePreferenceSelect.value = 'crafts';
+                }
+
+                // Scroll to the booking form
+                document.getElementById('booking-form-section').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+    <script src='https://cdn.jotfor.ms/agent/embedjs/019a9532033272669b83ee6fd8be90b916d7/embed.js'></script>
+    </body>
+</html>
