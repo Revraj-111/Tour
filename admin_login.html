@@ -104,40 +104,78 @@
 
     <div class="login-container">
         <h1>Admin Login</h1>
-        <p>Enter the password to access the panel.</p>
+        <p>Use your designated email and password for secure access.</p>
         
         <form id="login-form">
+            <div class="form-group">
+                <label for="email">Admin Email</label>
+                <input type="email" id="email" required value="admin@bathindadarshan.com">
+            </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" required>
             </div>
-            <button type="submit" id="login-button" class="submit-btn">Login</button>
+            <button type="submit" id="login-button" class="submit-btn">Login Securely</button>
             <div id="form-message" class="form-message"></div>
         </form>
     </div>
 
-    <script>
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Your working Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9mgKjqaRMVsVEeUIuqJfDEyoHQnVYHRI",
+            authDomain: "tour-ef66f.firebaseapp.com",
+            projectId: "tour-ef66f",
+            storageBucket: "tour-ef66f.firebasestorage.app",
+            messagingSenderId: "872021006804",
+            appId: "1:872021006804:web:ea539d3f52ebcbcb3cde41"
+        };
+        // ----------------------------------------
+
         const loginForm = document.getElementById('login-form');
-        const loginButton = document.getElementById('login-button');
+        const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('login-button');
         const formMessage = document.getElementById('form-message');
 
-        // This is your simple password.
-        // ⚠️ WARNING: This is NOT secure. See my note below.
-        const ADMIN_PASSWORD = "bathinda2025";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        loginForm.addEventListener('submit', (e) => {
+        function showMessage(msg, isError = true) {
+            formMessage.textContent = msg;
+            formMessage.className = 'form-message ' + (isError ? 'error' : 'success');
+            loginButton.disabled = false;
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const email = emailInput.value;
             const password = passwordInput.value;
 
-            if (password === ADMIN_PASSWORD) {
-                // Correct password. Redirect to the admin panel.
+            loginButton.disabled = true;
+            formMessage.style.display = 'none';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Login successful. Redirect to the admin panel.
                 window.location.href = 'admin_panel.html';
-            } else {
-                // Incorrect password.
-                formMessage.textContent = "Incorrect password. Please try again.";
-                formMessage.className = 'form-message error';
-                passwordInput.value = "";
+
+            } catch (error) {
+                console.error("Login Error:", error.code, error.message);
+                let displayMsg = "Login failed. Check your email and password.";
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    displayMsg = "Invalid credentials.";
+                }
+
+                showMessage(displayMsg);
             }
         });
     </script>
