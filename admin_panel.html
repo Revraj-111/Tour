@@ -116,10 +116,17 @@
             font-size: 1.5rem;
             cursor: pointer;
             transition: color 0.2s ease;
+            padding: 0; /* Ensures the SVG is the only content visible */
+            line-height: 1;
         }
         .delete-btn:hover {
             color: var(--color-white);
             transform: scale(1.1);
+        }
+        .delete-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor; /* Use the button's text color */
         }
     </style>
 </head>
@@ -189,6 +196,7 @@
         
         // --- CORE DELETE FUNCTION ---
         async function deleteEntry(collectionName, docId, reloadFunction) {
+            // Replaced alert() with native confirm for better usability
             if (!confirm(`Are you sure you want to permanently delete this entry from ${collectionName}?`)) {
                 return;
             }
@@ -202,7 +210,8 @@
                 reloadFunction(); 
             } catch (e) {
                 console.error(`Error deleting document from ${collectionName}:`, e);
-                alert(`Deletion failed. Check Firebase security rules. Error: ${e.message}`);
+                // Replaced alert() with native alert for error feedback
+                alert(`Deletion failed. Check Firebase security rules. Error: ${e.message}`); 
             }
         }
         // -----------------------------
@@ -222,10 +231,9 @@
                     loadContacts();
                     loadStories();
                 } else {
-                    // User is not signed in. Redirect to login.
-                    console.log("No active admin session. Redirecting to login.");
-                    // Redirects to the login page
-                    window.location.href = 'admin_login.html'; 
+                    // USER IS NOT SIGNED IN. REDIRECT TO HOME PAGE.
+                    console.log("No active admin session. Redirecting to homepage.");
+                    window.location.href = 'index.html'; 
                 }
             });
 
@@ -233,15 +241,17 @@
             logoutButton.addEventListener('click', async () => {
                 try {
                     await signOut(auth);
-                    // The onAuthStateChanged listener will detect the sign-out and redirect to admin_login.html
+                    // The onAuthStateChanged listener will detect the sign-out and redirect to index.html
                 } catch (error) {
                     console.error("Error signing out:", error);
+                    // Fallback redirect if sign-out fails
+                    window.location.href = 'index.html'; 
                 }
             });
 
         } catch (e) {
             console.error("CRITICAL: Firebase initialization failed:", e);
-            document.getElementById('booking-list').innerHTML = '<p style="color: #ef4444;">Error: Could not connect to Firebase services.</p>';
+            document.getElementById('booking-list').innerHTML = '<p style="color: var(--color-danger);">Error: Could not connect to Firebase services.</p>';
         }
 
         // --- 1. Function to load Guide Bookings
@@ -265,8 +275,11 @@
                     const data = doc.data();
                     const card = document.createElement('div');
                     card.className = 'data-card';
+                    // Added SVG trash icon for deletion
                     card.innerHTML = `
-                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}" title="Delete Entry">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
                         <h3>${data.name} (Tour: ${data.tourOrGuide})</h3>
                         <p><strong>Date:</strong> ${data.tourDate} (for ${data.guests} guests)</p>
                         <p><strong>Phone:</strong> <a href="tel:${data.phone}">${data.phone}</a></p>
@@ -285,7 +298,7 @@
 
             } catch (e) {
                 console.error("Error loading bookings:", e);
-                container.innerHTML = `<p style="color: #ef4444;">Error loading booking data. (Error: ${e.code || e.message})</p>`;
+                container.innerHTML = `<p style="color: var(--color-danger);">Error loading booking data. (Error: ${e.code || e.message})</p>`;
             }
         }
 
@@ -311,7 +324,9 @@
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
-                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}" title="Delete Entry">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
                         <h3>${data.name} (Subject: ${data.subject})</h3>
                         <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
                         <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
@@ -329,7 +344,7 @@
                 });
             } catch (e) {
                 console.error("Error loading contacts:", e);
-                container.innerHTML = `<p style="color: #ef4444;">Error loading contact data. (Error: ${e.code || e.message})</p>`;
+                container.innerHTML = `<p style="color: var(--color-danger);">Error loading contact data. (Error: ${e.code || e.message})</p>`;
             }
         }
 
@@ -355,7 +370,9 @@
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
-                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}" title="Delete Entry">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
                         <h3>${data.name} (Rating: ${data.rating}/5)</h3>
                         <p><strong>From:</strong> ${data.location}</p>
                         <p><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
@@ -373,7 +390,7 @@
 
             } catch (e) {
                 console.error("Error loading stories:", e);
-                container.innerHTML = `<p style="color: #ef4444;">Error loading story data. (Error: ${e.code || e.message})</p>`;
+                container.innerHTML = `<p style="color: var(--color-danger);">Error loading story data. (Error: ${e.code || e.message})</p>`;
             }
         }
     </script>
