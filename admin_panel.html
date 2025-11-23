@@ -14,6 +14,7 @@
             --color-text: #e4e4e7;
             --color-text-muted: #a1a1aa;
             --color-primary: #f59e0b;
+            --color-danger: #ef4444; /* Added for delete button */
         }
         body {
             background-color: var(--color-bg);
@@ -76,6 +77,7 @@
             padding: 1.5rem;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             border-left: 4px solid var(--color-primary);
+            position: relative; /* For delete button positioning */
         }
         .data-card h3 {
             font-size: 1.5rem;
@@ -103,6 +105,21 @@
         }
         .loading-message {
             color: var(--color-primary);
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--color-danger);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .delete-btn:hover {
+            color: var(--color-white);
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -143,7 +160,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import deleteDoc and doc for deletion capability
+        import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Your working Firebase Configuration ---
         const firebaseConfig = {
@@ -168,6 +186,26 @@
                 timeStyle: 'short'
             });
         }
+        
+        // --- CORE DELETE FUNCTION ---
+        async function deleteEntry(collectionName, docId, reloadFunction) {
+            if (!confirm(`Are you sure you want to permanently delete this entry from ${collectionName}?`)) {
+                return;
+            }
+
+            try {
+                // The actual deletion call
+                await deleteDoc(doc(db, collectionName, docId));
+                console.log(`Document ${docId} deleted from ${collectionName}`);
+                
+                // Reload the specific section to update the view
+                reloadFunction(); 
+            } catch (e) {
+                console.error(`Error deleting document from ${collectionName}:`, e);
+                alert(`Deletion failed. Check Firebase security rules. Error: ${e.message}`);
+            }
+        }
+        // -----------------------------
 
         // --- AUTHENTICATION CHECK AND INITIALIZATION ---
         try {
@@ -186,15 +224,16 @@
                 } else {
                     // User is not signed in. Redirect to login.
                     console.log("No active admin session. Redirecting to login.");
-                    window.location.href = 'admin_login.html';
+                    // Redirects to the login page
+                    window.location.href = 'admin_login.html'; 
                 }
             });
 
-            // Handle Logout
+            // Handle Logout action: Sign out and let the listener handle the redirect
             logoutButton.addEventListener('click', async () => {
                 try {
                     await signOut(auth);
-                    // onAuthStateChanged listener handles the redirect after sign out
+                    // The onAuthStateChanged listener will detect the sign-out and redirect to admin_login.html
                 } catch (error) {
                     console.error("Error signing out:", error);
                 }
@@ -207,12 +246,12 @@
 
         // --- 1. Function to load Guide Bookings
         async function loadBookings() {
+            const collectionName = 'guideBookings';
             const container = document.getElementById('booking-list');
             container.innerHTML = '<p class="loading-message">Fetching fresh booking data...</p>';
             
             try {
-                // Ensure query is ordered. If index is missing in Firestore, data won't load.
-                const q = query(collection(db, 'guideBookings'), orderBy('submittedAt', 'desc'));
+                const q = query(collection(db, collectionName), orderBy('submittedAt', 'desc'));
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
@@ -227,6 +266,7 @@
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
                         <h3>${data.name} (Tour: ${data.tourOrGuide})</h3>
                         <p><strong>Date:</strong> ${data.tourDate} (for ${data.guests} guests)</p>
                         <p><strong>Phone:</strong> <a href="tel:${data.phone}">${data.phone}</a></p>
@@ -235,6 +275,14 @@
                     `;
                     container.appendChild(card);
                 });
+                
+                // Attach delete listeners after rendering
+                container.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        deleteEntry(collectionName, btn.dataset.id, loadBookings);
+                    });
+                });
+
             } catch (e) {
                 console.error("Error loading bookings:", e);
                 container.innerHTML = `<p style="color: #ef4444;">Error loading booking data. (Error: ${e.code || e.message})</p>`;
@@ -243,11 +291,12 @@
 
         // --- 2. Function to load Contact Messages
         async function loadContacts() {
+            const collectionName = 'contactSubmissions';
             const container = document.getElementById('contact-list');
             container.innerHTML = '<p class="loading-message">Fetching fresh contact data...</p>';
             
             try {
-                const q = query(collection(db, 'contactSubmissions'), orderBy('submittedAt', 'desc'));
+                const q = query(collection(db, collectionName), orderBy('submittedAt', 'desc'));
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
@@ -262,6 +311,7 @@
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
                         <h3>${data.name} (Subject: ${data.subject})</h3>
                         <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
                         <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
@@ -269,6 +319,13 @@
                         <p class="message">${data.message}</p>
                     `;
                     container.appendChild(card);
+                });
+
+                // Attach delete listeners after rendering
+                container.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        deleteEntry(collectionName, btn.dataset.id, loadContacts);
+                    });
                 });
             } catch (e) {
                 console.error("Error loading contacts:", e);
@@ -278,11 +335,12 @@
 
         // --- 3. Function to load City Stories
         async function loadStories() {
+            const collectionName = 'cityStories';
             const container = document.getElementById('story-list');
             container.innerHTML = '<p class="loading-message">Fetching fresh story data...</p>';
             
             try {
-                const q = query(collection(db, 'cityStories'), orderBy('submittedAt', 'desc'));
+                const q = query(collection(db, collectionName), orderBy('submittedAt', 'desc'));
                 const querySnapshot = await getDocs(q);
 
                 if (querySnapshot.empty) {
@@ -297,6 +355,7 @@
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
+                        <button class="delete-btn" data-id="${doc.id}" data-collection="${collectionName}">🗑️</button>
                         <h3>${data.name} (Rating: ${data.rating}/5)</h3>
                         <p><strong>From:</strong> ${data.location}</p>
                         <p><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
@@ -304,6 +363,14 @@
                     `;
                     container.appendChild(card);
                 });
+
+                // Attach delete listeners after rendering
+                container.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        deleteEntry(collectionName, btn.dataset.id, loadStories);
+                    });
+                });
+
             } catch (e) {
                 console.error("Error loading stories:", e);
                 container.innerHTML = `<p style="color: #ef4444;">Error loading story data. (Error: ${e.code || e.message})</p>`;
@@ -313,5 +380,3 @@
 
 </body>
 </html>
-
-
