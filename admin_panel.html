@@ -101,6 +101,9 @@
             border-radius: 0.25rem;
             margin-top: 1rem;
         }
+        .loading-message {
+            color: var(--color-primary);
+        }
     </style>
 </head>
 <body>
@@ -108,36 +111,41 @@
     <div class="container">
         <h1>
             Admin Panel
-            <a href="index.html" class="logout-btn">Logout (Go to Home)</a>
+            <button id="logout-button" class="logout-btn">Logout</button>
         </h1>
 
+        <!-- Section for Booking Requests -->
         <section id="bookings">
             <h2>Guide Bookings</h2>
             <div id="booking-list" class="data-grid">
-                <p>Loading booking requests...</p>
+                <p class="loading-message">Loading booking requests...</p>
             </div>
         </section>
 
+        <!-- Section for Contact Messages -->
         <section id="contacts">
             <h2>Contact Messages</h2>
             <div id="contact-list" class="data-grid">
-                <p>Loading contact messages...</p>
+                <p class="loading-message">Loading contact messages...</p>
             </div>
         </section>
 
+        <!-- Section for City Stories -->
         <section id="stories">
             <h2>City Stories</h2>
             <div id="story-list" class="data-grid">
-                <p>Loading city stories...</p>
+                <p class="loading-message">Loading city stories...</p>
             </div>
         </section>
     </div>
 
+    <!-- Firebase Script (using your working config) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Your working Firebase config
+        // --- Your working Firebase Configuration ---
         const firebaseConfig = {
             apiKey: "AIzaSyD9mgKjqaRMVsVEeUIuqJfDEyoHQnVYHRI",
             authDomain: "tour-ef66f.firebaseapp.com",
@@ -146,24 +154,64 @@
             messagingSenderId: "872021006804",
             appId: "1:872021006804:web:ea539d3f52ebcbcb3cde41"
         };
+        // ----------------------------------------
 
-        let app, db;
+        let app, db, auth;
+
+        const logoutButton = document.getElementById('logout-button');
 
         // Function to format the Firestore timestamp
         function formatTimestamp(timestamp) {
-            if (!timestamp) return 'No date';
+            if (!timestamp || !timestamp.seconds) return 'No date';
             return new Date(timestamp.seconds * 1000).toLocaleString('en-IN', {
                 dateStyle: 'medium',
                 timeStyle: 'short'
             });
         }
 
-        // 1. Function to load Guide Bookings
+        // --- AUTHENTICATION CHECK AND INITIALIZATION ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            // Listen for auth state changes
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in, load the data
+                    console.log("Admin session active. Loading data...");
+                    loadBookings();
+                    loadContacts();
+                    loadStories();
+                } else {
+                    // User is not signed in. Redirect to login.
+                    console.log("No active admin session. Redirecting to login.");
+                    window.location.href = 'admin_login.html';
+                }
+            });
+
+            // Handle Logout
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    // onAuthStateChanged listener handles the redirect after sign out
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                }
+            });
+
+        } catch (e) {
+            console.error("CRITICAL: Firebase initialization failed:", e);
+            document.getElementById('booking-list').innerHTML = '<p style="color: #ef4444;">Error: Could not connect to Firebase services.</p>';
+        }
+
+        // --- 1. Function to load Guide Bookings
         async function loadBookings() {
             const container = document.getElementById('booking-list');
-            container.innerHTML = ''; // Clear "Loading..."
+            container.innerHTML = '<p class="loading-message">Fetching fresh booking data...</p>';
             
             try {
+                // Ensure query is ordered. If index is missing in Firestore, data won't load.
                 const q = query(collection(db, 'guideBookings'), orderBy('submittedAt', 'desc'));
                 const querySnapshot = await getDocs(q);
 
@@ -172,31 +220,31 @@
                     return;
                 }
 
+                container.innerHTML = ''; // Clear loading message
+
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
-                        <h3>${data.name}</h3>
+                        <h3>${data.name} (Tour: ${data.tourOrGuide})</h3>
+                        <p><strong>Date:</strong> ${data.tourDate} (for ${data.guests} guests)</p>
                         <p><strong>Phone:</strong> <a href="tel:${data.phone}">${data.phone}</a></p>
                         <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
-                        <p><strong>Date:</strong> ${data.tourDate}</p>
-                        <p><strong>Guests:</strong> ${data.guests}</p>
-                        <p><strong>Tour:</strong> ${data.tourOrGuide}</p>
-                        <p><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
+                        <p style="margin-top: 1rem;"><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
                     `;
                     container.appendChild(card);
                 });
             } catch (e) {
-                console.error("Error loading bookings: ", e);
-                container.innerHTML = '<p style="color: #ef4444;">Error loading booking data.</p>';
+                console.error("Error loading bookings:", e);
+                container.innerHTML = `<p style="color: #ef4444;">Error loading booking data. (Error: ${e.code || e.message})</p>`;
             }
         }
 
-        // 2. Function to load Contact Messages
+        // --- 2. Function to load Contact Messages
         async function loadContacts() {
             const container = document.getElementById('contact-list');
-            container.innerHTML = ''; // Clear "Loading..."
+            container.innerHTML = '<p class="loading-message">Fetching fresh contact data...</p>';
             
             try {
                 const q = query(collection(db, 'contactSubmissions'), orderBy('submittedAt', 'desc'));
@@ -207,29 +255,31 @@
                     return;
                 }
 
+                container.innerHTML = ''; // Clear loading message
+
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
-                        <h3>${data.name} (${data.subject})</h3>
-                        <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                        <h3>${data.name} (Subject: ${data.subject})</h3>
                         <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
+                        <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
                         <p><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
                         <p class="message">${data.message}</p>
                     `;
                     container.appendChild(card);
                 });
             } catch (e) {
-                console.error("Error loading contacts: ", e);
-                container.innerHTML = '<p style="color: #ef4444;">Error loading contact data.</p>';
+                console.error("Error loading contacts:", e);
+                container.innerHTML = `<p style="color: #ef4444;">Error loading contact data. (Error: ${e.code || e.message})</p>`;
             }
         }
 
-        // 3. Function to load City Stories
+        // --- 3. Function to load City Stories
         async function loadStories() {
             const container = document.getElementById('story-list');
-            container.innerHTML = ''; // Clear "Loading..."
+            container.innerHTML = '<p class="loading-message">Fetching fresh story data...</p>';
             
             try {
                 const q = query(collection(db, 'cityStories'), orderBy('submittedAt', 'desc'));
@@ -239,13 +289,15 @@
                     container.innerHTML = '<p>No city stories found.</p>';
                     return;
                 }
+                
+                container.innerHTML = ''; // Clear loading message
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const card = document.createElement('div');
                     card.className = 'data-card';
                     card.innerHTML = `
-                        <h3>${data.name} (⭐ ${data.rating}/5)</h3>
+                        <h3>${data.name} (Rating: ${data.rating}/5)</h3>
                         <p><strong>From:</strong> ${data.location}</p>
                         <p><strong>Submitted:</strong> ${formatTimestamp(data.submittedAt)}</p>
                         <p class="message">${data.message}</p>
@@ -253,24 +305,9 @@
                     container.appendChild(card);
                 });
             } catch (e) {
-                console.error("Error loading stories: ", e);
-                container.innerHTML = '<p style="color: #ef4444;">Error loading story data.</p>';
+                console.error("Error loading stories:", e);
+                container.innerHTML = `<p style="color: #ef4444;">Error loading story data. (Error: ${e.code || e.message})</p>`;
             }
-        }
-
-        // Initialize Firebase and load all data
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            
-            // Load all three data types
-            loadBookings();
-            loadContacts();
-            loadStories();
-
-        } catch (e) {
-            console.error("CRITICAL: Firebase initialization failed: ", e);
-            document.getElementById('bookings').innerHTML = '<h2>Error</h2><p>Could not connect to Firebase.</p>';
         }
     </script>
 
